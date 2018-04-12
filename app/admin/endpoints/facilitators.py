@@ -57,6 +57,7 @@ class FacilitatorCollection(Resource):
         f.scopes = data['scopes']
         f.seed = generate_seed()
         f.secret = data['secret']
+        f.tags = data['tags']
 
         f.get_transfers()
 
@@ -122,6 +123,9 @@ class FacilitatorItem(Resource):
 
         if data.get('scopes'):
             f.scopes = data['scopes']
+
+        if data.get('tags'):
+            f.tags = data['tags']
 
         f.save()
 
