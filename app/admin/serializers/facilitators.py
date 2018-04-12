@@ -5,6 +5,13 @@ from .nested import claim_nested
 from .iota import iota_address_model, api
 
 
+facilitator_offer_nested = api.model('Facilitator offer nested', {
+    'id': fields.String(required=True, description='Offer ID'),
+    'name': fields.String(required=True, description='Name'),
+    'tags': fields.List(fields.String(), required=True, description='Tags'),
+    'price': fields.Integer(required=True, description='Price')
+})
+
 facilitator_post_model = api.model('Facilitator POST model', {
     'first_name': fields.String(required=True, min_length=4, description='First name'),
     'last_name': fields.String(required=True, min_length=4, description='Last name'),
@@ -40,7 +47,8 @@ facilitator_full_model = api.inherit('Facilitator model', facilitator_minimal_mo
     'scopes': fields.List(fields.String(), required=True, description='Scopes'),
     'claims': fields.List(fields.Nested(claim_nested), required=True, description='Claims list'),
     'balance': fields.Integer(required=True, description='Facilitator balance'),
-    'deposit_address': fields.Nested(iota_address_model, required=True, description='Facilitator deposit address')
+    'deposit_address': fields.Nested(iota_address_model, required=True, description='Facilitator deposit address'),
+    'offers': fields.List(fields.Nested(facilitator_offer_nested), required=True, description='Offers list')
 })
 
 facilitator_container = api.model('Facilitator container', {
