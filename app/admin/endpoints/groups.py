@@ -59,7 +59,7 @@ class GroupCollection(Resource):
 class GroupItem(Resource):
     decorators = [auth.login_required]
 
-    @ns.marshal_with(group_full_model)
+    @ns.marshal_with(group_full_model_with_seed)
     def get(self, id):
         """
         Return group
