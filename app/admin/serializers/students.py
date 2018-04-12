@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask_restplus import fields
-from .nested import group_nested
+from .nested import group_nested, campus_nested
 from .facilitators import facilitator_post_model, facilitator_patch_model
 from .. import api
 
@@ -42,7 +42,8 @@ student_minimal_model = api.model('Student minimal model', {
 student_model = api.inherit('Student model', student_minimal_model, {
     'email': fields.String(required=True, description='Email'),
     'scopes': fields.List(fields.String(), required=True, description='Scopes'),
-    'groups': fields.List(fields.Nested(group_nested_with_project), required=True, description='Groups list')
+    'groups': fields.List(fields.Nested(group_nested_with_project), required=True, description='Groups list'),
+    'campus': fields.Nested(campus_nested, required=True, description='Campus')
 })
 
 student_container = api.model('Student container', {
