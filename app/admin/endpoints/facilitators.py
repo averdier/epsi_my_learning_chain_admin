@@ -5,7 +5,7 @@ from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.facilitators import facilitator_container, facilitator_full_model, \
     facilitator_patch_model, facilitator_post_model
-from app.models import Facilitator
+from app.models import Facilitator, User
 from utils.iota import generate_seed
 from utils.email import send_mail_with_service
 
@@ -41,10 +41,10 @@ class FacilitatorCollection(Resource):
         """
         data = request.json
 
-        if Facilitator.objects(username=data['username']).count() > 0:
+        if User.objects(username=data['username']).count() > 0:
             abort(400, error='Username already exist')
 
-        if Facilitator.objects(email=data['email']).count() > 0:
+        if User.objects(email=data['email']).count() > 0:
             abort(400, error='Email already exist')
 
         f = Facilitator()
