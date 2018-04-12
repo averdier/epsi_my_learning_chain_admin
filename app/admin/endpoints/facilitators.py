@@ -109,7 +109,7 @@ class FacilitatorItem(Resource):
 
         if data.get('email'):
             fs = Facilitator.objects(email=data['email']).first()
-            if fs is not None and fs.id != id:
+            if fs is not None and fs.id != f.id:
                 abort(400, error='Email already exist')
 
             f.email = data['email']
