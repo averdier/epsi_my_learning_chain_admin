@@ -11,12 +11,26 @@ group_nested_with_project = api.inherit('Group nested with project ID', group_ne
 })
 
 
-student_post_model = api.inherit('Student POST model', facilitator_post_model, {
+student_post_model = api.model('Student POST model', {
+    'first_name': fields.String(required=True, min_length=4, description='First name'),
+    'last_name': fields.String(required=True, min_length=4, description='Last name'),
+    'username': fields.String(required=True, min_length=6, description='Username'),
+    'email': fields.String(required=True, description='Email address'),
+    'secret': fields.String(required=True, min=6, description='Secret'),
+    'img_uri': fields.String(required=False, description='Img uri'),
+    'scopes': fields.List(fields.String(), required=True, description='Scopes'),
     'campus': fields.String(required=True, description='Campus ID'),
     'section': fields.String(required=True, description='Section ID')
 })
 
-student_patch_model = api.inherit('Student PATCH model', facilitator_patch_model, {})
+student_patch_model = api.model('Student PATCH model', {
+    'first_name': fields.String(required=False, min_length=4, description='First name'),
+    'last_name': fields.String(required=False, min_length=4, description='Last name'),
+    'email': fields.String(required=False, description='Email address'),
+    'secret': fields.String(required=False, min=6, description='Secret'),
+    'img_uri': fields.String(required=False, description='Img uri'),
+    'scopes': fields.List(fields.String(), required=False, description='Scopes')
+})
 
 student_minimal_model = api.model('Student minimal model', {
     'id': fields.String(required=True, description='Student ID'),
