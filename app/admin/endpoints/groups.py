@@ -4,7 +4,7 @@ from flask import request, current_app
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.groups import group_container, group_post_model, group_model, group_patch_model, group_full_model, \
-    group_supply_model
+    group_supply_model, group_full_model_with_seed
 from app.models import Project, Group, Student, Campus
 from utils.iota import generate_seed, make_transfer
 
@@ -31,7 +31,7 @@ class GroupCollection(Resource):
         """
         return {'groups': [gr for gr in Group.objects]}
 
-    @ns.marshal_with(group_full_model)
+    @ns.marshal_with(group_full_model_with_seed)
     @ns.expect(group_post_model)
     def post(self):
         """

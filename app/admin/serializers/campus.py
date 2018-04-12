@@ -31,6 +31,10 @@ campus_full_model = api.inherit('Campus full model', campus_model, {
     'projects': fields.List(fields.Nested(project_nested), required=True, description='Projects list')
 })
 
+campus_full_with_seed = api.inherit('Campus full with seed', campus_full_model, {
+    'seed': fields.String(required=True, description='Seed')
+})
+
 campus_container = api.model('Campus container model', {
     'campus': fields.List(fields.Nested(campus_minimal_model))
 })

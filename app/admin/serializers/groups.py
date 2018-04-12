@@ -36,6 +36,10 @@ group_full_model = api.inherit('Group full model', group_model, {
     'deposit_address': fields.Nested(iota_address_model, required=True, description='Group deposit address')
 })
 
+group_full_model_with_seed = api.inherit('Group full model with seed', group_full_model, {
+    'seed': fields.String(required=True, description='Seed')
+})
+
 group_container = api.model('Group container', {
     'groups': fields.List(fields.Nested(group_minimal_model), required=True, description='Groups list')
 })

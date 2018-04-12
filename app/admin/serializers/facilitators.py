@@ -51,6 +51,10 @@ facilitator_full_model = api.inherit('Facilitator model', facilitator_minimal_mo
     'offers': fields.List(fields.Nested(facilitator_offer_nested), required=True, description='Offers list')
 })
 
+facilitator_full_model_with_seed = api.inherit('Facilitator model with seed', facilitator_full_model, {
+    'seed': fields.String(required=True, description='Seed')
+})
+
 facilitator_container = api.model('Facilitator container', {
     'facilitators': fields.List(fields.Nested(facilitator_minimal_model), required=True, description='Facilitators list')
 })

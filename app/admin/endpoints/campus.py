@@ -4,7 +4,7 @@ from flask import request
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.campus import campus_post_model, campus_container, campus_model, campus_full_model, \
-    campus_patch_model
+    campus_patch_model, campus_full_with_seed
 from ..parsers import upload_parser
 from app.models import Campus, File
 from utils.iota import generate_seed
@@ -32,7 +32,7 @@ class CampusCollection(Resource):
         """
         return {'campus': [c for c in Campus.objects]}
 
-    @ns.marshal_with(campus_full_model)
+    @ns.marshal_with(campus_full_with_seed)
     @ns.expect(campus_post_model)
     def post(self):
         """

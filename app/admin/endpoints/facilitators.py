@@ -4,7 +4,7 @@ from flask import request, current_app
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.facilitators import facilitator_container, facilitator_full_model, \
-    facilitator_patch_model, facilitator_post_model
+    facilitator_patch_model, facilitator_post_model, facilitator_full_model_with_seed
 from app.models import Facilitator, User
 from utils.iota import generate_seed
 from utils.email import send_mail_with_service
@@ -33,7 +33,7 @@ class FacilitatorCollection(Resource):
 
         return {'facilitators': [f for f in Facilitator.objects]}
 
-    @ns.marshal_with(facilitator_full_model)
+    @ns.marshal_with(facilitator_full_model_with_seed)
     @ns.expect(facilitator_post_model)
     def post(self):
         """
