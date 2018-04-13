@@ -104,7 +104,7 @@ def make_transfer(iota_node, args):
         tag=Tag(args['tag']),
         value=args['value']
     )]
-    api = Iota(iota_node, args['seed'])
+    api = Iota(iota_node, seed=args['seed'], testnet=True)
     r = api.send_transfer(
         depth=7,
         transfers=txn,
