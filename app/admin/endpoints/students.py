@@ -138,3 +138,4 @@ class StudentItem(Resource):
         s.delete()
 
         return 'Student successfully deleted', 204
+
