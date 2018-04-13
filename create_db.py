@@ -19,7 +19,7 @@ with app.test_request_context():
         u = User(
             username='averdier',
             type='admin',
-            scopes = [
+            scopes=[
                 "canuser",
                 "canproject",
                 "cancreateproject",

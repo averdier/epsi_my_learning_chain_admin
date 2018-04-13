@@ -59,7 +59,7 @@ class CampusCollection(Resource):
 class CampusItem(Resource):
     decorators = [auth.login_required]
 
-    @ns.marshal_with(campus_full_model)
+    @ns.marshal_with(campus_full_with_seed)
     def get(self, id):
         """
         Return Campus
