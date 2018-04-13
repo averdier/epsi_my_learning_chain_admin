@@ -18,7 +18,34 @@ with app.test_request_context():
     if User.objects(username='averdier').count() == 0:
         u = User(
             username='averdier',
-            type='admin'
+            type='admin',
+            scopes = [
+                "canuser",
+                "canproject",
+                "cancreateproject",
+                "canlistmyprojects",
+                "canlistcampusprojects",
+                "canviewproject",
+                "cancreatecampus",
+                "cancampus",
+                "cancreateuser",
+                "cancreatestudent",
+                "cancreatefacilitator",
+                "cansection",
+                "cancreatesection",
+                "canlistsection",
+                "canreadsection",
+                "canfacilitator",
+                "canreadfacilitator",
+                "canlistfacilitator",
+                "cancampus",
+                "cancreatecampus",
+                "cangroup",
+                "cancreategroup",
+                "canclaim",
+                "canlistclaim",
+                "canlistfacilitator"
+            ]
         )
         u.secret = 'averdier'
         u.save()
