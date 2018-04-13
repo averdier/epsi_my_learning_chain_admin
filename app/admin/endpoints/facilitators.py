@@ -81,7 +81,7 @@ class FacilitatorCollection(Resource):
 class FacilitatorItem(Resource):
     decorators = [auth.login_required]
 
-    @ns.marshal_with(facilitator_full_model)
+    @ns.marshal_with(facilitator_full_model_with_seed)
     def get(self, id):
         """
         Return Facilitator
