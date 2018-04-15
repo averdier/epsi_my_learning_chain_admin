@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import request, current_app
+from flask import request, current_app, g
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.students import student_container, student_model, student_post_model, student_patch_model
@@ -28,6 +28,12 @@ class StudentCollection(Resource):
         """
         Return students
         """
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        return {'students': [s for s in Student.objects(campus=g.client.campus)]}
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
         return {'students': [s for s in Student.objects]}
 
     @ns.marshal_with(student_model)
@@ -46,6 +52,28 @@ class StudentCollection(Resource):
 
         if User.objects(email=data['email']).count() > 0:
             abort(400, error='Email already exist')
+
+        # Campus not needed in serializer
+        # try:
+        #     if 'campus' in dir(g.client):
+        #         s = Student(
+        #             campus=g.client.campus.id,
+        #             section=sc,
+        #             type='student',
+        #             first_name=data['first_name'],
+        #             last_name=data['last_name'],
+        #             username=data['username'],
+        #             email=data['email'],
+        #             img_uri=data['img_uri'],
+        #             scopes=data.get('scopes', ['']),
+        #         )
+        #         s.secret=data['secret']
+        #
+        #         s.save()
+        #
+        # except Exception as ex:
+        #     current_app.logger.debug('Error in introspection')
+        #     current_app.logger.debug(ex)
 
         s = Student(
             campus=c,
@@ -88,6 +116,14 @@ class StudentItem(Resource):
         """
         s = Student.objects.get_or_404(id=id)
 
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        if g.client.campus.id != s.campus.id:
+        #            abort(400, error='Not authorized')
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
+
         return s
 
     @ns.response(204, 'Student successfully patched')
@@ -101,6 +137,14 @@ class StudentItem(Resource):
 
         if len(data) == 0:
             abort(400, error='No data')
+
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        if g.client.campus.id != s.campus.id:
+        #            abort(400, error='Not authorized')
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
 
         if data.get('first_name'):
             s.first_name = data['first_name']
@@ -134,6 +178,14 @@ class StudentItem(Resource):
         Delete Student
         """
         s = Student.objects.get_or_404(id=id)
+
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        if g.client.campus.id != s.campus.id:
+        #            abort(400, error='Not authorized')
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
 
         s.delete()
 

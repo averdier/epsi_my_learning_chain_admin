@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import request, current_app
+from flask import request, current_app, g
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.groups import group_container, group_post_model, group_model, group_patch_model, group_full_model, \
@@ -29,6 +29,12 @@ class GroupCollection(Resource):
         """
         Return groups
         """
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        return {'groups': [gr for gr in Group.objects(project__in=Project.objects(campus=g.client.campus))]}
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
         return {'groups': [gr for gr in Group.objects]}
 
     @ns.marshal_with(group_full_model_with_seed)
@@ -40,6 +46,15 @@ class GroupCollection(Resource):
         data = request.json
 
         p = Project.objects.get_or_404(id=data['project'])
+
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        if g.client.campus.id != p.campus.id:
+        #            abort(400, error='Not authorized')
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
+
         if Group.objects(project=p, name=data['name']).count() > 0:
             abort(400, error='Name already exist')
 
@@ -59,12 +74,20 @@ class GroupCollection(Resource):
 class GroupItem(Resource):
     decorators = [auth.login_required]
 
-    @ns.marshal_with(group_full_model_with_seed)
+    @ns.marshal_with(group_full_model)
     def get(self, id):
         """
         Return group
         """
         gr = Group.objects.get_or_404(id=id)
+
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        if g.client.campus.id != gr.project.campus.id:
+        #            abort(400, error='Not authorized')
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
 
         return gr
 
@@ -79,6 +102,14 @@ class GroupItem(Resource):
             abort(400, error='No data')
 
         gr = Group.objects.get_or_404(id=id)
+
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        if g.client.campus.id != gr.project.campus.id:
+        #            abort(400, error='Not authorized')
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
 
         gs = Group.objects(project=gr.project, name=data['name']).first()
 
@@ -96,6 +127,14 @@ class GroupItem(Resource):
         Delete group
         """
         gr = Group.objects.get_or_404(id=id)
+
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        if g.client.campus.id != gr.project.campus.id:
+        #            abort(400, error='Not authorized')
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
 
         gr.delete()
 
@@ -116,6 +155,14 @@ class GroupItemSupply(Resource):
         data = request.json
         gr = Group.objects.get_or_404(id=id)
         c = Campus.objects.get_or_404(id=data['campus'])
+
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        if g.client.campus.id != gr.project.campus.id or g.client.id != c.id:
+        #            abort(400, error='Not authorized')
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
 
         if gr.project.campus.id != c.id:
             abort(400, error='Not authorized')
@@ -148,6 +195,14 @@ class GroupItemStudent(Resource):
         gr = Group.objects.get_or_404(id=id)
         s = Student.objects.get_or_404(id=sid)
 
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        if g.client.campus.id != gr.project.campus.id or g.client.campus.id != s.campus.id:
+        #            abort(400, error='Not authorized')
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
+
         if gr.project.campus.id != s.campus.id:
             abort(400, error='Not authorized')
 
@@ -166,6 +221,14 @@ class GroupItemStudent(Resource):
         """
         gr = Group.objects.get_or_404(id=id)
         s = Student.objects.get_or_404(id=sid)
+
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        if g.client.campus.id != gr.project.campus.id or g.client.campus.id != s.campus.id:
+        #            abort(400, error='Not authorized')
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
 
         if gr.project.campus.id != s.campus.id:
             abort(400, error='Not authorized')

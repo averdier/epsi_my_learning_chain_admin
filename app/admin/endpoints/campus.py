@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import request
+from flask import request, g, current_app
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.campus import campus_post_model, campus_container, campus_model, campus_full_model, \
@@ -59,7 +59,7 @@ class CampusCollection(Resource):
 class CampusItem(Resource):
     decorators = [auth.login_required]
 
-    @ns.marshal_with(campus_full_with_seed)
+    @ns.marshal_with(campus_full_model)
     def get(self, id):
         """
         Return Campus
@@ -79,6 +79,14 @@ class CampusItem(Resource):
 
         if len(data) == 0:
             abort(400, error='No data')
+
+        #try:
+        #    if 'campus' in dir(g.client):
+        #        if g.client.campus.id != c.id:
+        #            abort(400, error='Not authorized')
+        #except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
 
         if data['name']:
             cs = Campus.objects(name=data['name']).first()
@@ -101,6 +109,14 @@ class CampusItem(Resource):
         """
         c = Campus.objects.get_or_404(id=id)
 
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        if g.client.campus.id != c.id:
+        #            abort(400, error='Not authorized')
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
+
         c.delete()
 
         return 'Campus successfully deleted', 204
@@ -118,6 +134,14 @@ class CampusItemUploader(Resource):
         Upload file
         """
         c = Campus.objects.get_or_404(id=id)
+
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        if g.client.campus.id != c.id:
+        #            abort(400, error='Not authorized')
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
 
         args = upload_parser.parse_args()
         data = args['file']
@@ -144,6 +168,14 @@ class CampusItemUpload(Resource):
         """
         c = Campus.objects.get_or_404(id=id)
         f = File.objects.get_or_404(id=uid)
+
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        if g.client.campus.id != c.id:
+        #            abort(400, error='Not authorized')
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
 
         try:
             c.remove_file(f)

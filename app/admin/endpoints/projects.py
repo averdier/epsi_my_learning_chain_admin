@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import request, g
+from flask import request, g, current_app
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.projects import project_model, project_container, project_post_model, project_patch_model
@@ -28,6 +28,12 @@ class ProjectCollection(Resource):
         """
         Return Projects
         """
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        return {'projects': [gr for gr in Project.objects(campus=g.client.campus)]}
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
         return {'projects': [p for p in Project.objects]}
 
     @ns.marshal_with(project_model)
@@ -42,6 +48,21 @@ class ProjectCollection(Resource):
 
         if Project.objects(campus=c, name=data['name']).count() > 0:
             abort(400, error='Name already exist')
+
+        # Campus not needed in serializer
+        # try:
+        #     if 'campus' in dir(g.client):
+        #         p = Project(
+        #             campus=g.client.campus.id,
+        #             name=data['name']
+        #         )
+        #
+        #         p.save()
+        #
+        #         return p
+        # except Exception as ex:
+        #     current_app.logger.debug('Error in introspection')
+        #     current_app.logger.debug(ex)
 
         p = Project(
             campus=c,
@@ -65,6 +86,14 @@ class ProjectItem(Resource):
         """
         p = Project.objects.get_or_404(id=id)
 
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        if g.client.campus.id != p.campus.id:
+        #            abort(400, error='Not authorized')
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
+
         return p
 
     @ns.response(204, 'Project successfully patched')
@@ -78,6 +107,14 @@ class ProjectItem(Resource):
             abort(400, error='No data')
 
         p = Project.objects.get_or_404(id=id)
+
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        if g.client.campus.id != p.campus.id:
+        #            abort(400, error='Not authorized')
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
 
         ps = Project.objects(campus=p.campus, name=data['name']).first()
 
@@ -97,6 +134,14 @@ class ProjectItem(Resource):
         """
         p = Project.objects.get_or_404(id=id)
 
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        if g.client.campus.id != p.campus.id:
+        #            abort(400, error='Not authorized')
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
+
         p.delete()
 
         return 'Project successfully deleted', 204
@@ -114,6 +159,14 @@ class ProjectItemUploader(Resource):
         Upload file
         """
         p = Project.objects.get_or_404(id=id)
+
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        if g.client.campus.id != p.campus.id:
+        #            abort(400, error='Not authorized')
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
 
         args = upload_parser.parse_args()
         data = args['file']
@@ -140,6 +193,14 @@ class ProjectItemUpload(Resource):
         """
         p = Project.objects.get_or_404(id=id)
         f = File.objects.get_or_404(id=uid)
+
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        if g.client.campus.id != p.campus.id:
+        #            abort(400, error='Not authorized')
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
 
         try:
             p.remove_file(f)

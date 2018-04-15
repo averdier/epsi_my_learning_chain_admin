@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from flask import request
+from flask import request, g, current_app
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.sections import section_post_model, section_container, section_model
 from app.models import Section, Campus
-
 
 ns = Namespace('sections', description='Sections related operation')
 
@@ -27,6 +26,12 @@ class SectionCollection(Resource):
         """
         Return Sections
         """
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        return {'sections': [s for s in Section.objects(campus=g.client.campus)]}
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
         return {'sections': [s for s in Section.objects]}
 
     @ns.marshal_with(section_model)
@@ -41,6 +46,22 @@ class SectionCollection(Resource):
         if Section.objects(name=data['name'], campus=c).count() > 0:
             abort(400, error='Name already exist')
 
+        # Campus not needed in serializer
+        # try:
+        #     if 'campus' in dir(g.client):
+        #         s = Section(
+        #             campus=g.client.campus.id,
+        #             year=data['year'],
+        #             name=data['name']
+        #         )
+        #
+        #         s.save()
+        #
+        #         return s
+        # except Exception as ex:
+        #     current_app.logger.debug('Error in introspection')
+        #     current_app.logger.debug(ex)
+
         s = Section(
             campus=c,
             year=data['year'],
@@ -50,6 +71,7 @@ class SectionCollection(Resource):
         s.save()
 
         return s
+
 
 @ns.route('/<id>')
 @ns.response(404, 'Section not found')
@@ -63,6 +85,14 @@ class SectionItem(Resource):
         """
         s = Section.objects.get_or_404(id=id)
 
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        if g.client.campus.id != s.campus.id:
+        #            abort(400, error='Not authorized')
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
+
         return s
 
     @ns.response(204, 'Section successfully deleted')
@@ -71,6 +101,14 @@ class SectionItem(Resource):
         Delete Section
         """
         s = Section.objects.get_or_404(id=id)
+
+        # try:
+        #    if 'campus' in dir(g.client):
+        #        if g.client.campus.id != s.campus.id:
+        #            abort(400, error='Not authorized')
+        # except Exception as ex:
+        #    current_app.logger.debug('Error in introspection')
+        #    current_app.logger.debug(ex)
 
         s.delete()
 
